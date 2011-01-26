@@ -44,21 +44,21 @@ jsEvaluateScript  :: JSContext
      -> IO (JSValue, JSValue)
 jsEvaluateScript ctx script thisobject sourceURL startingLineNumber = 
   alloca $ \exception -> do
-    res <- {#call unsafe JSEvaluateScript as jsEvaluateScript_#} 
+    res <- {#call unsafe JSEvaluateScript as jsEvaluateScript_#}
              ctx script thisobject sourceURL startingLineNumber exception
     ex <- peek exception
     return (res, ex)
     
-  
-JSCheckScriptSyntax ctx script sourceURL startingLineNumber = 
+jsCheckScriptSyntax ctx script sourceURL startingLineNumber = 
   alloca $ \exception -> do
-    res <- {#call unsafe JSCheckScriptSyntax as jsCheckScriptSyntax_#}
+    res <- jsCheckScriptSyntax_
              ctx script sourceURL startingLineNumber exception
-    ex <- peek
+    ex <- peek exception
     return (res, ex)
 
-foreign import ccall unsafe "JSBase.chs.h JSEvaluateScript"
-  jsEvaluateScript_ :: ((JSContext) -> ((JSString) -> ((JSObject) -> ((JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (JSValue))))))))
+-- C->HS doesn't seem to like the corresponding C prototype.
+foreign import ccall unsafe "JSBase.chs.h JSCheckScriptSyntax"
+  jsCheckScriptSyntax_ :: ((JSContext) -> ((JSString) -> ((JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (JSValue)))))))
 
 jsGarbageCollect = {# call unsafe JSGarbageCollect as jsGarbageCollect_ #}
- 
+

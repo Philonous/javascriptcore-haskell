@@ -15,7 +15,7 @@
 
 {-# LANGUAGE ForeignFunctionInterface, StandaloneDeriving, GeneralizedNewtypeDeriving #-}
 
-module Graphics.UI.Gtk.WebKit.JSBase where
+module Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase where
 
 import Foreign.Ptr
 import Foreign.Storable

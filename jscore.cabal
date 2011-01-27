@@ -1,0 +1,31 @@
+Name:                jscore
+Version:             0.1
+License:             MIT
+Description:         
+  Low level bindings to the JavaScriptCore part of the gtkwebKit Browser library
+  .
+  For now, please refer to the Java Script Core documentation for a complete description of the api.
+Synopsis:            Bindings to JavaScriptCore
+Author:              Philipp Balzarek
+Maintainer:          p.balzarek@googlemail.com
+Stability:           experimental
+License-File:        LICENSE
+Category:            Web
+Build-Type:          Simple
+Cabal-Version:       >= 1.6
+Extra-Source-Files:  src/include/JSObjectRef.wrapper.h
+
+Library
+  Build-Depends:     base >= 4 && < 5
+                     , glib
+  Exposed-modules:   Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase
+                     , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSObjectRef
+                     
+  Other-modules:     C2HS
+--  C-Sources:	     src/alignment.c
+  Include-Dirs:      src/include/JavaScriptCore
+                     , src/include
+  ghc-options:       -Wall
+  hs-source-dirs:    src
+  build-tools:       c2hs
+  pkgconfig-depends: webkit-1.0

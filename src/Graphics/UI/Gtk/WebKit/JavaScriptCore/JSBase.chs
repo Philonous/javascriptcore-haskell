@@ -56,7 +56,7 @@ jsCheckScriptSyntax ctx script sourceURL startingLineNumber =
     ex <- peek exception
     return (res, ex)
 
--- C->HS doesn't seem to like the corresponding C prototype.
+-- TODO: doctor the C include to make it return an UInt
 foreign import ccall unsafe "JSBase.chs.h JSCheckScriptSyntax"
   jsCheckScriptSyntax_ :: ((JSContext) -> ((JSString) -> ((JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (JSValue)))))))
 

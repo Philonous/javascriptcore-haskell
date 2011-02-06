@@ -8,31 +8,27 @@
 --
 -- Language : Haskell 98
 --
--- This module provides low level language bindings to the 
--- Jack Audio Connection Kit (http://jackaudio.org ). 
--- It is intended to be a faithfull representation of the C include files.
--- Parameters are converted only where the meaning is obvious. 
+
 
 {-# LANGUAGE ForeignFunctionInterface, StandaloneDeriving, GeneralizedNewtypeDeriving #-}
 
 module Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase where
 
-import Foreign.Ptr
-import Foreign.Storable
-import Foreign.Marshal.Alloc
-import Foreign.C.Types
+import Foreign
+import Foreign.C
 
 #include <JavaScriptCore/JSBase.h>
 
-{# pointer JSContextGroupRef		 as JSContextGroup            newtype #}
-{# pointer JSContextRef			 as JSContext    	      newtype #}
-{# pointer JSGlobalContextRef		 as JSGlobalContext    	      newtype #}
-{# pointer JSStringRef			 as JSString     	      newtype #}
-{# pointer JSClassRef			 as JSClass     	      newtype #}
-{# pointer JSPropertyNameArrayRef        as JSPropertyNameArray       newtype #}
+{# pointer JSContextGroupRef             as JSContextGroup    foreign newtype #}
+{# pointer JSContextRef                  as JSContext         foreign newtype #}
+{# pointer JSGlobalContextRef            as JSGlobalContext   foreign newtype #}
+{# pointer JSStringRef                   as JSString          foreign newtype #}
+{# pointer JSClassRef                    as JSClass           foreign newtype #}
+{# pointer JSPropertyNameArrayRef        as JSPropertyNameArray foreign newtype #}
 {# pointer JSPropertyNameAccumulatorRef  as JSPropertyNameAccumulator newtype #}
 {# pointer JSValueRef                    as JSValue                   newtype #}
 {# pointer JSObjectRef                   as JSObject                  newtype #}
+
 
 deriving instance Storable JSValue
 
@@ -40,25 +36,31 @@ jsEvaluateScript  :: JSContext
      -> JSString
      -> JSObject
      -> JSString
-     -> Foreign.C.Types.CInt
+     -> CInt
      -> IO (JSValue, JSValue)
 jsEvaluateScript ctx script thisobject sourceURL startingLineNumber = 
-  alloca $ \exception -> do
-    res <- {#call unsafe JSEvaluateScript as jsEvaluateScript_#}
+  withJSContext ctx        $ \ctx ->
+  withJSString  script     $ \script ->
+  withJSString  sourceURL  $ \sourceURL ->
+  alloca                   $ \exception -> do
+    res <- {#call unsafe JSEvaluateScript as ^ #}
              ctx script thisobject sourceURL startingLineNumber exception
     ex <- peek exception
     return (res, ex)
     
 jsCheckScriptSyntax ctx script sourceURL startingLineNumber = 
+  withJSContext ctx        $ \ctx ->
+  withJSString  script     $ \script ->
+  withJSString  sourceURL  $ \sourceURL ->
   alloca $ \exception -> do
     res <- jsCheckScriptSyntax_
              ctx script sourceURL startingLineNumber exception
     ex <- peek exception
-    return (res, ex)
+    return (toBool res, ex)
 
 -- TODO: doctor the C include to make it return an UInt
 foreign import ccall unsafe "JSBase.chs.h JSCheckScriptSyntax"
-  jsCheckScriptSyntax_ :: ((JSContext) -> ((JSString) -> ((JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (JSValue)))))))
+  jsCheckScriptSyntax_ :: ((Ptr JSContext) -> ((Ptr JSString) -> ((Ptr JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (CUInt)))))))
 
 jsGarbageCollect = {# call unsafe JSGarbageCollect as jsGarbageCollect_ #}
 

@@ -23,6 +23,7 @@ Library
                      , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase
                      , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSObjectRef
                      , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSValueRef
+                     , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSContextRef
   Other-modules:     C2HS
 --  C-Sources:	     src/alignment.c
   Include-Dirs:      src/include/JavaScriptCore

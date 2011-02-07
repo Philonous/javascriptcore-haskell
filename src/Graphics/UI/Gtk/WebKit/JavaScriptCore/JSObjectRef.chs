@@ -9,7 +9,8 @@ import Foreign.C
 
 import System.Glib.Flags
 
-{# import Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase#}
+{# import Graphics.UI.Gtk.WebKit.JavaScriptCore.Util#}
+{# import Graphics.UI.Gtk.WebKit.JavaScriptCore.JSStringRef #}
 
 #include <JavaScriptCore/JSObjectRef.h>
 #include <JSObjectRef.wrapper.h>
@@ -225,7 +226,7 @@ jsObjectMakeRegExp = withCtxArgsEx {#call JSObjectMakeRegExp as ^ #}
 jsObjectMakeFunction ctx name parameterNames body sourceURL startingLineNumber =
   withJSContext ctx $ \ctx ->
   withJSString name $ \name ->
-  withArrayLen parameterNames $ \parameterCount parameterNames ->
+  withJSStringArrayLen parameterNames $ \parameterCount parameterNames ->
   withJSString body $ \body ->
   withJSString sourceURL $ \sourceURL ->
   alloca $ \exception  -> do 

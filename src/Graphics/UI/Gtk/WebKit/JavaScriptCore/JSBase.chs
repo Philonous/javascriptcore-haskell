@@ -19,23 +19,15 @@ import Foreign.C
 
 #include <JavaScriptCore/JSBase.h>
 
-{# pointer JSContextGroupRef             as JSContextGroup    foreign newtype #}
-{# pointer JSContextRef                  as JSContext         foreign newtype #}
-{# pointer JSGlobalContextRef            as JSGlobalContext   foreign newtype #}
-{# pointer JSStringRef                   as JSString          foreign newtype #}
-{# pointer JSClassRef                    as JSClass           foreign newtype #}
-{# pointer JSPropertyNameArrayRef        as JSPropertyNameArray foreign newtype #}
-{# pointer JSPropertyNameAccumulatorRef  as JSPropertyNameAccumulator newtype #}
-{# pointer JSValueRef                    as JSValue                   newtype #}
-{# pointer JSObjectRef                   as JSObject                  newtype #}
+{# import Graphics.UI.Gtk.WebKit.JavaScriptCore.Util #}
+{# import Graphics.UI.Gtk.WebKit.JavaScriptCore.JSStringRef #}
 
-
-deriving instance Storable JSValue
+-- Type definitions are in <Util>
 
 jsEvaluateScript  :: JSContext
-     -> JSString
+     -> String
      -> JSObject
-     -> JSString
+     -> String
      -> CInt
      -> IO (JSValue, JSValue)
 jsEvaluateScript ctx script thisobject sourceURL startingLineNumber = 
@@ -53,14 +45,11 @@ jsCheckScriptSyntax ctx script sourceURL startingLineNumber =
   withJSString  script     $ \script ->
   withJSString  sourceURL  $ \sourceURL ->
   alloca $ \exception -> do
-    res <- jsCheckScriptSyntax_
+    res <- {# call JSCheckScriptSyntax as ^ #}
              ctx script sourceURL startingLineNumber exception
     ex <- peek exception
     return (toBool res, ex)
 
--- TODO: doctor the C include to make it return an UInt
-foreign import ccall unsafe "JSBase.chs.h JSCheckScriptSyntax"
-  jsCheckScriptSyntax_ :: ((Ptr JSContext) -> ((Ptr JSString) -> ((Ptr JSString) -> (CInt -> ((Ptr (JSValue)) -> (IO (CUInt)))))))
 
 jsGarbageCollect = {# call unsafe JSGarbageCollect as jsGarbageCollect_ #}
 

@@ -18,9 +18,11 @@ Extra-Source-Files:  src/include/JSObjectRef.wrapper.h
 Library
   Build-Depends:     base >= 4 && < 5
                      , glib
-  Exposed-modules:   Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase
+  Exposed-modules:   Graphics.UI.Gtk.WebKit.JavaScriptCore.Util
+                     , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSStringRef
+                     , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSBase
                      , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSObjectRef
-                     
+                     , Graphics.UI.Gtk.WebKit.JavaScriptCore.JSValueRef
   Other-modules:     C2HS
 --  C-Sources:	     src/alignment.c
   Include-Dirs:      src/include/JavaScriptCore
